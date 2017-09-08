@@ -67,6 +67,13 @@ point it's not entirely clear which is the better approach, but the first seems
 most sensible. In either case, the end result should be the same for any active
 mdraid devices.
 
+## Prior art
+This approach was strongly influenced by some earlier work implementing a udev
+mechanism for setting the timeouts.
+
+* https://bugs.debian.org/780207
+* https://bugs.debian.org/780162
+* https://www.smartmontools.org/ticket/658
 
 ## Further reading
 [1] http://strugglers.net/~andy/blog/2015/11/09/linux-software-raid-and-drive-timeouts/
