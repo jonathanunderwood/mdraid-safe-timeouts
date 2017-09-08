@@ -70,6 +70,7 @@ mdraid devices.
 
 ## Further reading
 [1] http://strugglers.net/~andy/blog/2015/11/09/linux-software-raid-and-drive-timeouts/
+
 [2] https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
 
 
