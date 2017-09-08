@@ -16,7 +16,8 @@
 # <http://www.gnu.org/licenses/>.
 
 # This file causes block devices with Linux RAID (mdadm) signatures to
-# attempt to set safe timeouts for the drives involved
+# attempt to set safe ERC/TLER/SCTERC timeouts for the drives involved,
+# and the kernel controller.
 # See udev(8) for syntax
 
 # Don't process any events if anaconda is running as anaconda brings up
@@ -35,12 +36,12 @@ IMPORT{cmdline}="noiswmd"
 ENV{noiswmd}=="?*", GOTO="md_timeouts_exit"
 
 # Adjust timeouts. This is done by triggering a rule each time a
-# partition is added/changed. If that partition is a raid member, then
-# the script that's called sets the parent disk's timeouts
-# accordingly. Note that for a given disk, the script will be called
-# once for each partition on the disk. The script looks at all known
-# (at that point in time) partitions on the disks and sets timeouts
-# appropriately.
+# partition device (eg. /dev/sda1) is added/changed. If that partition
+# is a raid member, then the script that's called sets the parent disk's
+# timeouts accordingly. Note that for a given disk, the script will be
+# called once for each partition on the disk. The script looks at all
+# known (at that point in time) partitions on the disks and sets
+# timeouts appropriately.
 
 IMPORT{program}="/sbin/mdadm --examine --export $devnode"
 
