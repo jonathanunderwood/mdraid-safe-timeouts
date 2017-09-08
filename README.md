@@ -21,7 +21,7 @@ raid code assumes the drive is dead and kicks it from the array. This is how a
 single error with these drives can easily kill an array. With commodity desktop
 drives, it is safer therefore to increase the time that the kernel waits for the
 disk to return it to allow an error. Empirically it's been found that 180
-seconds is sufficient[^1] - all known desktop drives will eventually return an error
+seconds is sufficient[1] - all known desktop drives will eventually return an error
 within this time. Fortunately, the Linux kernel allows setting this timeout on a
 per drive basis via `/sys/block/<device_id>/device/timeout`.
 
@@ -34,7 +34,7 @@ it's important to set the both the SCTERC timeouts and kernel controller
 timeouts appropriately - we certainly don't want the kernel timing out before
 the disk has timed out.
 
-See [^1][^2]for further details.
+See [1,2] for further details.
 
 ## Strategy
 The approach we take here is to adjust timeouts for drives containing mdraid
@@ -69,7 +69,7 @@ mdraid devices.
 
 
 ## Further reading
-[^1] http://strugglers.net/~andy/blog/2015/11/09/linux-software-raid-and-drive-timeouts/
-[^2] https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
+[1] http://strugglers.net/~andy/blog/2015/11/09/linux-software-raid-and-drive-timeouts/
+[2] https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
 
 
