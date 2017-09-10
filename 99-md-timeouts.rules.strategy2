@@ -39,9 +39,12 @@ ENV{noiswmd}=="?*", GOTO="md_timeouts_exit"
 # doesn't have scterc turned on (i.e. if it's disabled or the disk
 # doesn't support it). We determine if the disk has SCTERC turned on
 # by examining the output of smartctl and seeing if it contains the
-# word "seconds". It would be better to check the exit status code of
-# smartctl, but it's not clear what that will be in the three cases
-# (supported and turned on, supported but disabled, not supported).
+# word "seconds". If the word "seconds" is found we take this to imply
+# STCERC is turned on, and take no action. Otherwise we set the drive
+# controller timeout to 180 seconds. It would be better to check the
+# exit status code of smartctl rather than grepping for "seconds", but
+# it's not clear what that will be in the three cases (supported and
+# turned on, supported but disabled, not supported).
 
 ENV{DEVTYPE}!="partition", GOTO="md_timeouts_exit"
 
