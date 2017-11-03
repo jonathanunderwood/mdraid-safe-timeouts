@@ -76,15 +76,16 @@ managed RAID partitions as follows:
       the kernel controller timeout to 180 secs
 
 The Strategy 1 and 2 implementations use slightly different udev rules
-for triggering the setting of the timeouts.
+for triggering the setting of the timeouts:
 
-Strategy 1: Trigger on creation/change of an mdraid device
+**Strategy 1:** Trigger on creation/change of an mdraid device
 (e.g. /dev/md0). When that happens, discover the disks that contribute
 to the array and set the timeouts for each according to the strategy
 above
 
-Strategy 2: Trigger whenever a partition is created/changed, discover
-the host drive and set the timeouts according to the strategy above
+**Strategy 2:** Trigger whenever a partition is created/changed,
+discover the host drive and set the timeouts according to the strategy
+above
    
 In both cases the timeouts for a drive can end up being set multiple
 times until all partitions on the device are known about by the kernel
