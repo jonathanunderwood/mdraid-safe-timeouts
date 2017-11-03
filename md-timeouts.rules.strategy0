@@ -21,18 +21,18 @@
 
 # Don't process any events if anaconda is running as anaconda brings up
 # raid devices manually
-ENV{ANACONDA}=="?*", GOTO="md_timeouts_exit"
+ENV{ANACONDA}=="?*", GOTO="md_timeouts_end"
 
-SUBSYSTEM!="block|machinecheck", GOTO="md_timeouts_exit"
+SUBSYSTEM!="block|machinecheck", GOTO="md_timeouts_end"
 
 # "noiswmd" on kernel command line stops mdadm from handling
 # "isw" (aka IMSM - Intel RAID).
 # "nodmraid" on kernel command line stops mdadm from handling
 # "isw" or "ddf".
 IMPORT{cmdline}="nodmraid"
-ENV{nodmraid}=="?*", GOTO="md_timeouts_exit"
+ENV{nodmraid}=="?*", GOTO="md_timeouts_end"
 IMPORT{cmdline}="noiswmd"
-ENV{noiswmd}=="?*", GOTO="md_timeouts_exit"
+ENV{noiswmd}=="?*", GOTO="md_timeouts_end"
 
 # Set controller timeout for parent disk of each partition if the
 # partition is a mdraid partition of higher than raid 0, and the disk
@@ -46,7 +46,7 @@ ENV{noiswmd}=="?*", GOTO="md_timeouts_exit"
 # it's not clear what that will be in the three cases (supported and
 # turned on, supported but disabled, not supported).
 
-ENV{DEVTYPE}!="partition", GOTO="md_timeouts_exit"
+ENV{DEVTYPE}!="partition", GOTO="md_timeouts_end"
 
 IMPORT{program}="/sbin/mdadm --examine --export $devnode"
 
@@ -58,4 +58,4 @@ ACTION=="add|change", \
   PROGRAM!="/usr/bin/sh -c '/usr/sbin/smartctl -l scterc /dev/$parent | grep -q seconds && exit 0 || exit 1'", \
   RUN+="/usr/bin/sh -c '/usr/bin/echo 180 > /sys/block/$parent/device/timeout && /usr/bin/logger timeout for /dev/$parent set to 180 secs'"
 
-LABEL="md_timeouts_exit"
+LABEL="md_timeouts_end"

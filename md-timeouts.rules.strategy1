@@ -22,18 +22,18 @@
 
 # Don't process any events if anaconda is running as anaconda brings up
 # raid devices manually
-ENV{ANACONDA}=="?*", GOTO="md_timeouts_exit"
+ENV{ANACONDA}=="?*", GOTO="md_timeouts_end"
 
-SUBSYSTEM!="block|machinecheck", GOTO="md_timeouts_exit"
+SUBSYSTEM!="block|machinecheck", GOTO="md_timeouts_end"
 
 # "noiswmd" on kernel command line stops mdadm from handling
 # "isw" (aka IMSM - Intel RAID).
 # "nodmraid" on kernel command line stops mdadm from handling
 # "isw" or "ddf".
 IMPORT{cmdline}="nodmraid"
-ENV{nodmraid}=="?*", GOTO="md_timeouts_exit"
+ENV{nodmraid}=="?*", GOTO="md_timeouts_end"
 IMPORT{cmdline}="noiswmd"
-ENV{noiswmd}=="?*", GOTO="md_timeouts_exit"
+ENV{noiswmd}=="?*", GOTO="md_timeouts_end"
 
 # Adjust timeouts. This is done by a rule triggered by the creation or
 # change of an mdraid array device node (eg. /dev/md0). The script that
@@ -47,4 +47,4 @@ ENV{DEVTYPE}=="disk", ACTION=="add|change", \
   TEST=="/usr/sbin/smartctl", \
   RUN+="/etc/udev/rules.d/mdraid-set-timeouts-for-array.sh $kernel"
 
-LABEL="md_timeouts_exit"
+LABEL="md_timeouts_end"
