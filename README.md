@@ -67,13 +67,13 @@ managed RAID partitions as follows:
   set the kernel controller timeout to 180 secs.
 * If the drive contains redundant RAID partitions (level 1 or higher) and no
   RAID level 0 partitions:
-      * If the drive does not support STCERC, set the kernel controller
-        timeout to 180 secs.
-      * If the drive does support STCERC, set the STCERC timeouts to be 5
-        seconds less than the kernel controller timeout (which is 30 seconds
-        by default)
-      * If setting the STRCERC timeouts fails, then we disable STCERC and set
-        the kernel controller timeout to 180 secs
+    * If the drive does not support STCERC, set the kernel controller
+      timeout to 180 secs.
+    * If the drive does support STCERC, set the STCERC timeouts to be 5
+      seconds less than the kernel controller timeout (which is 30 seconds
+      by default)
+    * If setting the STRCERC timeouts fails, then we disable STCERC and set
+      the kernel controller timeout to 180 secs
 
 The Strategy 1 and 2 implementations use slightly different udev rules
 for triggering the setting of the timeouts.
