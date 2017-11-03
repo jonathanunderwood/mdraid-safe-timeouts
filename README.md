@@ -36,8 +36,8 @@ configurable pair of settings (one for read and one for right) that
 set the time that the drive should try to read/write for before
 returning an error to the OS. In this case it's important to set the
 both the SCTERC timeouts and kernel controller timeouts appropriately
-- we certainly don't want the kernel timing out before the disk has
-timed out.
+since we don't want the kernel timing out before the disk has timed
+out.
 
 See [1,2] for further details.
 
