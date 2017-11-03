@@ -3,36 +3,41 @@ Udev rules and helper scripts for setting safe disk scterc and drive controller
 timeout values for mdraid arrays.
 
 ## Background
-When the OS tries to read from or write to the disk, it sends the command and
-waits. What should happen is that drive returns writes the data successfully.
 
-The proper sequence of events when something goes wrong and the drive can't read
-the data the OS requests, it should return an error to the OS. In the case of a
-failed read the raid code then calculates what the data should be from the other
-disks in the array, and writes it back to the disk which raised an error.
-Glitches like this are normal and, provided the disk isn't failing, this will
-correct the problem.
+When the OS tries to read from or write to the disk, it sends the
+command and waits. What should happen is that drive returns writes the
+data successfully.
 
-Unfortunately, with commodity desktop drives, they can take over two minutes to
-give up, while the linux kernel will, by default, give up after 30 seconds. At
-which point, the RAID code recomputes the block and tries to write it back to
-the disk. The disk is still trying to read the data and fails to respond, so the
-raid code assumes the drive is dead and kicks it from the array. This is how a
-single error with these drives can easily kill an array. With commodity desktop
-drives, it is safer therefore to increase the time that the kernel waits for the
-disk to return it to allow an error. Empirically it's been found that 180
-seconds is sufficient[1] - all known desktop drives will eventually return an error
-within this time. Fortunately, the Linux kernel allows setting this timeout on a
-per drive basis via `/sys/block/<device_id>/device/timeout`.
+The proper sequence of events when something goes wrong and the drive
+can't read the data the OS requests, it should return an error to the
+OS. In the case of a failed read the raid code then calculates what
+the data should be from the other disks in the array, and writes it
+back to the disk which raised an error.  Glitches like this are normal
+and, provided the disk isn't failing, this will correct the problem.
 
-The situation becomes more complicated for higher end devices (often intended
-for use in hardware RAID arrays) which support SCT Error Recovery Control
-(SCTERC), also called TLER on some drives. This is a configurable pair of
-settings (one for read and one for right) that set the time that the drive
-should try to read/write for before returning an error to the OS. In this case
-it's important to set the both the SCTERC timeouts and kernel controller
-timeouts appropriately - we certainly don't want the kernel timing out before
-the disk has timed out.
+Unfortunately, with commodity desktop drives, they can take over two
+minutes to give up, while the linux kernel will, by default, give up
+after 30 seconds. At which point, the RAID code recomputes the block
+and tries to write it back to the disk. The disk is still trying to
+read the data and fails to respond, so the raid code assumes the drive
+is dead and kicks it from the array. This is how a single error with
+these drives can easily kill an array. With commodity desktop drives,
+it is safer therefore to increase the time that the kernel waits for
+the disk to return it to allow an error. Empirically it's been found
+that 180 seconds is sufficient[1] - all known desktop drives will
+eventually return an error within this time. Fortunately, the Linux
+kernel allows setting this timeout on a per drive basis via
+`/sys/block/<device_id>/device/timeout`.
+
+The situation becomes more complicated for higher end devices (often
+intended for use in hardware RAID arrays) which support SCT Error
+Recovery Control (SCTERC), also called TLER on some drives. This is a
+configurable pair of settings (one for read and one for right) that
+set the time that the drive should try to read/write for before
+returning an error to the OS. In this case it's important to set the
+both the SCTERC timeouts and kernel controller timeouts appropriately
+- we certainly don't want the kernel timing out before the disk has
+timed out.
 
 See [1,2] for further details.
 
@@ -50,17 +55,18 @@ partitions of level 1 or higher. If not, no changes are made.
 
 If the disk contains a RAID level 1 or higher parition:
 * Use smartctl to see if the disk has any STCERC timeouts set
-* If STCERC timeouts are set, no changes are made to the kernel controller
-  timeout.
-* If the disk doesn't support STCERC, or STCERC is disabled, then we set
-  the kernel controller timeout to 180 seconds.
+* If STCERC timeouts are set, no changes are made to the kernel
+  controller timeout.
+* If the disk doesn't support STCERC, or STCERC is disabled,
+  then we set the kernel controller timeout to 180 seconds.
 
 ### Strategy 1 and 2
-Strategies 1 and 2 attempt to actively adjust the STCERC settings as well as
-set an appropriate kernel controller timeout.
 
-The approach we take is to adjust timeouts for drives containing mdraid
-managed RAID partitions as follows:
+Strategies 1 and 2 attempt to actively adjust the STCERC settings as
+well as set an appropriate kernel controller timeout.
+
+The approach we take is to adjust timeouts for drives containing
+mdraid managed RAID partitions as follows:
 
 * Discover all partitions on the drive.
 * If the drive contains any RAID0 partitions, disable STCERC if present, and
