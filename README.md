@@ -32,7 +32,7 @@ kernel allows setting this timeout on a per drive basis via
 The situation becomes more complicated for higher end devices (often
 intended for use in hardware RAID arrays) which support SCT Error
 Recovery Control (SCTERC), also called TLER on some drives. This is a
-configurable pair of settings (one for read and one for right) that
+configurable pair of settings (one for read and one for write) that
 set the time that the drive should try to read/write for before
 returning an error to the OS. In this case it's important to set the
 both the SCTERC timeouts and kernel controller timeouts appropriately
